@@ -15,54 +15,54 @@ export function ProfileView() {
       className="max-w-7xl mx-auto px-4 py-8 pb-32"
     >
       <div className="flex items-center gap-4 mb-8">
-        <SpinningLogo size="lg" />
+        <SpinningLogo size="lg" className="drop-shadow-[0_0_15px_rgba(242,183,5,0.3)]" />
         <div>
-          <h2 className="text-2xl font-display font-bold text-white capitalize">
+          <h2 className="text-2xl font-display font-bold text-white capitalize tracking-wide">
             Hola, {role === 'admin' ? 'Administrador' : role === 'employee' ? 'Empleado' : 'Cliente'}
           </h2>
-          <p className="text-sm text-white/60">Miembro Imperial</p>
+          <p className="text-sm text-white/60 font-bold tracking-widest uppercase mt-1">Miembro Imperial</p>
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-imperial-gold/20 to-imperial-crimson/20 border border-imperial-gold/30 rounded-3xl p-6 mb-8 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-imperial-gold/20 to-imperial-crimson/20 border border-imperial-gold/30 rounded-3xl p-6 mb-8 relative overflow-hidden shadow-[0_10px_30px_rgba(242,183,5,0.15)]">
         <div className="absolute top-0 right-0 w-32 h-32 bg-imperial-gold/20 rounded-bl-full blur-2xl pointer-events-none" />
         
         <div className="flex justify-between items-center mb-4 relative z-10">
           <div className="flex items-center gap-2">
-            <Crown className="w-6 h-6 text-imperial-gold" />
-            <h3 className="text-lg font-bold text-white">Puntos Imperiales</h3>
+            <Crown className="w-6 h-6 text-imperial-gold drop-shadow-[0_0_8px_rgba(242,183,5,0.5)]" />
+            <h3 className="text-lg font-bold text-white tracking-wide">Puntos Imperiales</h3>
           </div>
-          <span className="text-3xl font-display font-bold text-imperial-gold">{puntosImperiales}</span>
+          <span className="text-3xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">{puntosImperiales}</span>
         </div>
         
-        <div className="w-full bg-black/40 rounded-full h-2 mb-2 relative z-10">
-          <div className="bg-imperial-gold h-2 rounded-full" style={{ width: '60%' }}></div>
+        <div className="w-full bg-black/40 rounded-full h-2 mb-2 relative z-10 shadow-inner">
+          <div className="bg-imperial-gold h-2 rounded-full shadow-[0_0_10px_rgba(242,183,5,0.5)]" style={{ width: '60%' }}></div>
         </div>
-        <p className="text-xs text-white/60 relative z-10">Faltan 250 pts para tu próximo Rollito Primavera gratis.</p>
+        <p className="text-xs text-white/80 font-medium relative z-10">Faltan 250 pts para tu próximo Rollito Primavera gratis.</p>
       </div>
 
-      <div className="space-y-2">
-        <button className="w-full flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+      <div className="space-y-3">
+        <button className="w-full flex items-center justify-between bg-black/40 backdrop-blur-sm border border-white/5 p-4 rounded-2xl hover:bg-white/5 hover:border-white/10 transition-all group shadow-[0_5px_15px_rgba(0,0,0,0.2)]">
           <div className="flex items-center gap-3">
-            <Gift className="w-5 h-5 text-white/60" />
-            <span className="font-medium text-white">Recompensas Disponibles</span>
+            <Gift className="w-5 h-5 text-imperial-gold/70 group-hover:text-imperial-gold transition-colors" />
+            <span className="font-bold text-white tracking-wide">Recompensas Disponibles</span>
           </div>
-          <ChevronRight className="w-5 h-5 text-white/40" />
+          <ChevronRight className="w-5 h-5 text-white/40 group-hover:text-white/80 transition-colors" />
         </button>
-        <button className="w-full flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+        <button className="w-full flex items-center justify-between bg-black/40 backdrop-blur-sm border border-white/5 p-4 rounded-2xl hover:bg-white/5 hover:border-white/10 transition-all group shadow-[0_5px_15px_rgba(0,0,0,0.2)]">
           <div className="flex items-center gap-3">
-            <Settings className="w-5 h-5 text-white/60" />
-            <span className="font-medium text-white">Configuración de Cuenta</span>
+            <Settings className="w-5 h-5 text-white/60 group-hover:text-white transition-colors" />
+            <span className="font-bold text-white tracking-wide">Configuración de Cuenta</span>
           </div>
-          <ChevronRight className="w-5 h-5 text-white/40" />
+          <ChevronRight className="w-5 h-5 text-white/40 group-hover:text-white/80 transition-colors" />
         </button>
         <button 
           onClick={logout}
-          className="w-full flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition-colors mt-4"
+          className="w-full flex items-center justify-between bg-black/40 backdrop-blur-sm border border-white/5 p-4 rounded-2xl hover:bg-imperial-crimson/10 hover:border-imperial-crimson/30 transition-all mt-6 group shadow-[0_5px_15px_rgba(0,0,0,0.2)]"
         >
           <div className="flex items-center gap-3">
-            <LogOut className="w-5 h-5 text-imperial-crimson" />
-            <span className="font-medium text-imperial-crimson">Cerrar Sesión</span>
+            <LogOut className="w-5 h-5 text-imperial-crimson drop-shadow-[0_0_8px_rgba(178,24,31,0.3)]" />
+            <span className="font-bold text-imperial-crimson tracking-wide">Cerrar Sesión</span>
           </div>
         </button>
       </div>

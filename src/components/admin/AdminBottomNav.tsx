@@ -1,15 +1,16 @@
 import React from 'react';
-import { Home, ListOrdered, User } from 'lucide-react';
+import { LayoutDashboard, Utensils, Users, User } from 'lucide-react';
 
-interface BottomNavProps {
-  activeTab: 'home' | 'orders' | 'profile';
-  setActiveTab: (tab: 'home' | 'orders' | 'profile') => void;
+interface AdminBottomNavProps {
+  activeTab: 'dashboard' | 'menu' | 'staff' | 'profile';
+  setActiveTab: (tab: 'dashboard' | 'menu' | 'staff' | 'profile') => void;
 }
 
-export function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
+export function AdminBottomNav({ activeTab, setActiveTab }: AdminBottomNavProps) {
   const tabs = [
-    { id: 'home', icon: Home, label: 'Menú' },
-    { id: 'orders', icon: ListOrdered, label: 'Pedidos' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Mando' },
+    { id: 'menu', icon: Utensils, label: 'Menú' },
+    { id: 'staff', icon: Users, label: 'Personal' },
     { id: 'profile', icon: User, label: 'Perfil' },
   ] as const;
 

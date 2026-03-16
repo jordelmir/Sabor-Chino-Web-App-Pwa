@@ -1,15 +1,15 @@
 import React from 'react';
-import { Home, ListOrdered, User } from 'lucide-react';
+import { MonitorSmartphone, ChefHat, User } from 'lucide-react';
 
-interface BottomNavProps {
-  activeTab: 'home' | 'orders' | 'profile';
-  setActiveTab: (tab: 'home' | 'orders' | 'profile') => void;
+interface EmployeeBottomNavProps {
+  activeTab: 'pos' | 'kds' | 'profile';
+  setActiveTab: (tab: 'pos' | 'kds' | 'profile') => void;
 }
 
-export function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
+export function EmployeeBottomNav({ activeTab, setActiveTab }: EmployeeBottomNavProps) {
   const tabs = [
-    { id: 'home', icon: Home, label: 'Menú' },
-    { id: 'orders', icon: ListOrdered, label: 'Pedidos' },
+    { id: 'pos', icon: MonitorSmartphone, label: 'Caja / POS' },
+    { id: 'kds', icon: ChefHat, label: 'Cocina (KDS)' },
     { id: 'profile', icon: User, label: 'Perfil' },
   ] as const;
 
@@ -22,7 +22,7 @@ export function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
             <button
               key={id}
               onClick={() => setActiveTab(id)}
-              className={`flex flex-col items-center justify-center w-20 h-full gap-1.5 transition-all duration-300 relative group ${
+              className={`flex flex-col items-center justify-center w-24 h-full gap-1.5 transition-all duration-300 relative group ${
                 isActive ? 'text-imperial-gold scale-105' : 'text-white/40 hover:text-white/80'
               }`}
             >

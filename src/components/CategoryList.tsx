@@ -8,27 +8,28 @@ interface CategoryListProps {
 
 export function CategoryList({ activeCategory, setActiveCategory }: CategoryListProps) {
   return (
-    <div className="sticky top-[105px] z-30 bg-oled-black/90 backdrop-blur-md border-b border-white/5 py-3">
-      <div className="flex overflow-x-auto no-scrollbar px-4 gap-3 snap-x">
+    <div className="sticky top-[105px] z-30 bg-zinc-950/90 backdrop-blur-2xl border-b border-white/10 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+      <div className="flex overflow-x-auto hide-scrollbar px-4 gap-3 snap-x">
         {CATEGORIES.map((category) => {
-          const isActive = activeCategory === category;
+          const isActive = activeCategory === category.name;
           return (
             <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`relative px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap snap-start transition-colors ${
-                isActive ? 'text-oled-black' : 'text-white/60 hover:text-white'
+              key={category.id}
+              onClick={() => setActiveCategory(category.name)}
+              className={`relative px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap snap-start transition-colors flex items-center gap-2 border ${
+                isActive ? 'text-black border-imperial-gold' : 'text-white/60 hover:text-white bg-white/5 border-white/10 hover:bg-white/10'
               }`}
             >
               {isActive && (
                 <motion.div
                   layoutId="activeCategory"
-                  className="absolute inset-0 bg-imperial-gold rounded-full"
+                  className="absolute inset-0 bg-imperial-gold rounded-full shadow-[0_0_15px_rgba(242,183,5,0.4)]"
                   initial={false}
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
-              <span className="relative z-10">{category}</span>
+              <span className="relative z-10 text-lg">{category.icon}</span>
+              <span className="relative z-10">{category.name}</span>
             </button>
           );
         })}

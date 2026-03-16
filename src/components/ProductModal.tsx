@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product, SizeOption } from '../data/menuData';
 import { useCartStore } from '../store/useCartStore';
-import { X, Minus, Plus } from 'lucide-react';
+import { X, Minus, Plus, Image as ImageIcon } from 'lucide-react';
 
 interface ProductModalProps {
   product: Product | null;
@@ -43,92 +43,126 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="bg-zinc-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+          className="bg-zinc-950/95 backdrop-blur-3xl w-full max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border border-white/10 flex flex-col max-h-[90vh]"
           onClick={e => e.stopPropagation()}
         >
-          <div className="p-6 relative">
+          {/* Image Header */}
+          <div className="relative h-64 w-full bg-black/40 shrink-0">
+            {product.image ? (
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-white/20">
+                <ImageIcon className="w-16 h-16 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
+            
             <button 
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 bg-white/5 rounded-full text-white/60 hover:text-white transition-colors"
+              className="absolute top-4 right-4 p-2 bg-black/40 backdrop-blur-md rounded-full text-white/80 hover:text-white transition-colors border border-white/10 hover:bg-white/10"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-2xl font-display font-bold text-white mb-2 pr-10">{product.name}</h2>
+            <div className="absolute bottom-0 left-0 right-0 p-6 pb-2">
+              <h2 className="text-3xl font-display font-bold text-white mb-1 drop-shadow-lg leading-tight tracking-wide">{product.name}</h2>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.4)]">
+                  ¢{currentPrice.toLocaleString('es-CR')}
+                </span>
+                {product.popular && (
+                  <span className="bg-imperial-crimson text-white text-[10px] font-bold uppercase tracking-widest py-1 px-2.5 rounded-md shadow-[0_0_10px_rgba(178,24,31,0.5)]">
+                    Popular
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="p-6 overflow-y-auto custom-scrollbar">
             {product.description && (
-              <p className="text-white/60 text-sm mb-6 leading-relaxed">{product.description}</p>
+              <p className="text-white/70 text-base mb-8 leading-relaxed font-medium">{product.description}</p>
             )}
 
             {hasSizes && (
-              <div className="mb-6">
-                <h3 className="text-sm font-medium text-white/80 mb-3 uppercase tracking-wider">Tamaño</h3>
+              <div className="mb-8">
+                <h3 className="text-xs font-bold text-white/50 mb-3 uppercase tracking-widest">Tamaño</h3>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setSize('Entero')}
                     className={`flex-1 py-3 px-4 rounded-2xl border transition-all ${
                       size === 'Entero' 
-                        ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold' 
-                        : 'border-white/10 bg-white/5 text-white/60'
+                        ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold shadow-[0_0_15px_rgba(242,183,5,0.15)]' 
+                        : 'border-white/10 bg-black/40 text-white/60 hover:bg-white/5 hover:border-white/20'
                     }`}
                   >
-                    <div className="font-semibold">Entero</div>
-                    <div className="text-xs opacity-80">¢{product.price.toLocaleString('es-CR')}</div>
+                    <div className="font-bold mb-1">Entero</div>
+                    <div className="text-sm opacity-80 font-medium">¢{product.price.toLocaleString('es-CR')}</div>
                   </button>
                   <button
                     onClick={() => setSize('Medio')}
                     className={`flex-1 py-3 px-4 rounded-2xl border transition-all ${
                       size === 'Medio' 
-                        ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold' 
-                        : 'border-white/10 bg-white/5 text-white/60'
+                        ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold shadow-[0_0_15px_rgba(242,183,5,0.15)]' 
+                        : 'border-white/10 bg-black/40 text-white/60 hover:bg-white/5 hover:border-white/20'
                     }`}
                   >
-                    <div className="font-semibold">Medio</div>
-                    <div className="text-xs opacity-80">¢{product.priceMedio?.toLocaleString('es-CR')}</div>
+                    <div className="font-bold mb-1">Medio</div>
+                    <div className="text-sm opacity-80 font-medium">¢{product.priceMedio?.toLocaleString('es-CR')}</div>
                   </button>
                 </div>
               </div>
             )}
 
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-white/80 mb-3 uppercase tracking-wider">Notas Especiales</h3>
+            <div className="mb-8">
+              <h3 className="text-xs font-bold text-white/50 mb-3 uppercase tracking-widest">Notas Especiales (Opcional)</h3>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Ej. Sin cebollino, extra salsa de soya..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold resize-none h-24"
+                className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold resize-none h-24 transition-all shadow-inner focus:shadow-[0_0_15px_rgba(242,183,5,0.15)]"
               />
             </div>
 
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4 bg-white/5 rounded-full p-1 border border-white/10">
-                <button 
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  <Minus className="w-5 h-5" />
-                </button>
-                <span className="w-6 text-center font-bold text-lg text-white">{quantity}</span>
-                <button 
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  <Plus className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="text-right">
-                <div className="text-sm text-white/50 uppercase tracking-wider mb-1">Total</div>
-                <div className="text-2xl font-bold text-imperial-gold">
-                  ¢{(currentPrice * quantity).toLocaleString('es-CR')}
+            {/* Sticky Bottom Actions */}
+            <div className="mt-auto pt-6 border-t border-white/10">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4 bg-black/40 rounded-full p-1 border border-white/10 shadow-inner">
+                  <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    <Minus className="w-6 h-6" />
+                  </button>
+                  <span className="w-8 text-center font-bold text-xl text-white">{quantity}</span>
+                  <button 
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    <Plus className="w-6 h-6" />
+                  </button>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-white/40 uppercase tracking-widest mb-1 font-bold">Total Calculado</div>
+                  <div className="text-3xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">
+                    ¢{(currentPrice * quantity).toLocaleString('es-CR')}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <button
-              onClick={handleAdd}
-              className="w-full bg-imperial-gold text-oled-black font-bold text-lg py-4 rounded-full hover:bg-imperial-gold/90 transition-colors active:scale-[0.98]"
-            >
-              Agregar al Pedido
-            </button>
+              <button
+                onClick={handleAdd}
+                className="w-full bg-imperial-gold text-black font-bold text-lg py-4 rounded-2xl hover:bg-imperial-gold/90 transition-all active:scale-[0.98] shadow-[0_0_20px_rgba(242,183,5,0.4)]"
+              >
+                Agregar al Pedido
+              </button>
+            </div>
           </div>
         </motion.div>
       </motion.div>

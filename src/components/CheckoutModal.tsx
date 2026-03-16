@@ -61,25 +61,25 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-zinc-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+            className="bg-zinc-950/95 backdrop-blur-3xl w-full max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border border-white/10"
             onClick={e => e.stopPropagation()}
           >
             <div className="p-6 relative">
               <button 
                 onClick={onClose}
-                className="absolute top-4 right-4 p-2 bg-white/5 rounded-full text-white/60 hover:text-white transition-colors"
+                className="absolute top-4 right-4 p-2 bg-white/5 rounded-full text-white/60 hover:text-white transition-colors border border-white/5 hover:bg-white/10"
                 disabled={isAuthenticating}
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <h2 className="text-2xl font-display font-bold text-white mb-6">Finalizar Pedido</h2>
+              <h2 className="text-2xl font-display font-bold text-white mb-6 tracking-wide">Finalizar Pedido</h2>
 
               <div className="space-y-6">
                 {/* Address Section */}
                 <div>
-                  <h3 className="text-sm font-medium text-white/80 mb-3 uppercase tracking-wider flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-imperial-gold" />
+                  <h3 className="text-sm font-bold text-white/80 mb-3 uppercase tracking-widest flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-imperial-gold drop-shadow-[0_0_8px_rgba(242,183,5,0.5)]" />
                     Dirección de Entrega
                   </h3>
                   <div className="relative">
@@ -87,10 +87,10 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       placeholder="Ej. 100m sur de la iglesia, casa blanca con portón negro..."
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold resize-none h-24"
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold resize-none h-24 shadow-inner focus:shadow-[0_0_15px_rgba(242,183,5,0.15)] transition-all"
                       disabled={isAuthenticating}
                     />
-                    <button className="absolute bottom-3 right-3 text-xs bg-imperial-gold/20 text-imperial-gold px-3 py-1.5 rounded-full font-medium flex items-center gap-1 hover:bg-imperial-gold/30 transition-colors">
+                    <button className="absolute bottom-3 right-3 text-xs bg-imperial-gold/20 text-imperial-gold px-3 py-1.5 rounded-full font-bold flex items-center gap-1 hover:bg-imperial-gold/30 transition-colors border border-imperial-gold/30">
                       <MapPin className="w-3 h-3" /> Usar GPS
                     </button>
                   </div>
@@ -98,8 +98,8 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
                 {/* Payment Method Section */}
                 <div>
-                  <h3 className="text-sm font-medium text-white/80 mb-3 uppercase tracking-wider flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-imperial-gold" />
+                  <h3 className="text-sm font-bold text-white/80 mb-3 uppercase tracking-widest flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-imperial-gold drop-shadow-[0_0_8px_rgba(242,183,5,0.5)]" />
                     Método de Pago
                   </h3>
                   <div className="grid grid-cols-3 gap-3">
@@ -108,45 +108,45 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       disabled={isAuthenticating}
                       className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl border transition-all ${
                         paymentMethod === 'SINPE' 
-                          ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold' 
-                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                          ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold shadow-[0_0_15px_rgba(242,183,5,0.15)]' 
+                          : 'border-white/10 bg-black/40 text-white/60 hover:bg-white/5 hover:border-white/20'
                       }`}
                     >
                       <Smartphone className="w-6 h-6" />
-                      <span className="text-xs font-semibold">SINPE Móvil</span>
+                      <span className="text-xs font-bold">SINPE Móvil</span>
                     </button>
                     <button
                       onClick={() => setPaymentMethod('Tarjeta')}
                       disabled={isAuthenticating}
                       className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl border transition-all ${
                         paymentMethod === 'Tarjeta' 
-                          ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold' 
-                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                          ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold shadow-[0_0_15px_rgba(242,183,5,0.15)]' 
+                          : 'border-white/10 bg-black/40 text-white/60 hover:bg-white/5 hover:border-white/20'
                       }`}
                     >
                       <CreditCard className="w-6 h-6" />
-                      <span className="text-xs font-semibold">Tarjeta</span>
+                      <span className="text-xs font-bold">Tarjeta</span>
                     </button>
                     <button
                       onClick={() => setPaymentMethod('Efectivo')}
                       disabled={isAuthenticating}
                       className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl border transition-all ${
                         paymentMethod === 'Efectivo' 
-                          ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold' 
-                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                          ? 'border-imperial-gold bg-imperial-gold/10 text-imperial-gold shadow-[0_0_15px_rgba(242,183,5,0.15)]' 
+                          : 'border-white/10 bg-black/40 text-white/60 hover:bg-white/5 hover:border-white/20'
                       }`}
                     >
                       <Banknote className="w-6 h-6" />
-                      <span className="text-xs font-semibold">Efectivo</span>
+                      <span className="text-xs font-bold">Efectivo</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Total & Confirm */}
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-6 border-t border-white/10">
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-white/60 uppercase tracking-wider text-sm font-medium">Total a Pagar</span>
-                    <span className="text-3xl font-bold text-imperial-gold">
+                    <span className="text-white/50 uppercase tracking-widest text-xs font-bold">Total a Pagar</span>
+                    <span className="text-3xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">
                       ¢{getTotal().toLocaleString('es-CR')}
                     </span>
                   </div>
@@ -154,7 +154,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   <button
                     onClick={handleConfirm}
                     disabled={isAuthenticating}
-                    className="relative w-full bg-imperial-gold text-oled-black font-bold text-lg py-4 rounded-full hover:bg-imperial-gold/90 transition-colors active:scale-[0.98] flex items-center justify-center gap-2 overflow-hidden"
+                    className="relative w-full bg-imperial-gold text-black font-bold text-lg py-4 rounded-2xl hover:bg-imperial-gold/90 transition-all active:scale-[0.98] flex items-center justify-center gap-2 overflow-hidden shadow-[0_0_20px_rgba(242,183,5,0.4)]"
                   >
                     {isAuthenticating ? (
                       <motion.div 

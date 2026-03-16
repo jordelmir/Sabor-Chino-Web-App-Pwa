@@ -40,14 +40,14 @@ export function LoginView() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative z-10"
+        className="w-full max-w-md bg-zinc-950/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative z-10"
       >
         <div className="flex justify-center mb-6">
-          <SpinningLogo size="xl" />
+          <SpinningLogo size="xl" className="drop-shadow-[0_0_15px_rgba(242,183,5,0.3)]" />
         </div>
 
-        <h2 className="text-3xl font-display font-bold text-center text-white mb-2">Portal Imperial</h2>
-        <p className="text-center text-white/50 mb-8 text-sm">Selecciona tu nivel de acceso</p>
+        <h2 className="text-3xl font-display font-bold text-center text-white mb-2 tracking-wide">Portal Imperial</h2>
+        <p className="text-center text-white/50 mb-8 text-sm font-medium tracking-widest uppercase">Selecciona tu nivel de acceso</p>
 
         <div className="grid grid-cols-3 gap-3 mb-8">
           {(Object.keys(roleConfig) as Role[]).filter(r => r !== 'guest').map((role) => {
@@ -59,10 +59,10 @@ export function LoginView() {
                 key={role}
                 type="button"
                 onClick={() => handleRoleSelect(role)}
-                className={`flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all ${isActive ? `${config.bg} ${config.border} ${config.color} scale-105 shadow-lg` : 'border-white/5 text-white/40 hover:bg-white/5'}`}
+                className={`flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all ${isActive ? `${config.bg} ${config.border} ${config.color} scale-105 shadow-[0_0_15px_rgba(255,255,255,0.1)]` : 'border-white/5 text-white/40 hover:bg-white/5 hover:border-white/10'}`}
               >
                 <Icon className="w-6 h-6" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">{config.title}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest">{config.title}</span>
               </button>
             );
           })}
@@ -75,7 +75,7 @@ export function LoginView() {
               placeholder="Correo electrónico"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className={`w-full bg-black/50 border rounded-xl p-4 text-white placeholder-white/30 focus:outline-none focus:ring-1 transition-colors ${selectedRole === 'admin' ? 'focus:border-imperial-gold focus:ring-imperial-gold border-imperial-gold/20' : selectedRole === 'employee' ? 'focus:border-imperial-crimson focus:ring-imperial-crimson border-imperial-crimson/20' : 'focus:border-white/50 focus:ring-white/50 border-white/10'}`}
+              className={`w-full bg-black/40 border rounded-xl p-4 text-white placeholder-white/30 focus:outline-none focus:ring-1 transition-all shadow-inner ${selectedRole === 'admin' ? 'focus:border-imperial-gold focus:ring-imperial-gold border-imperial-gold/20 focus:shadow-[0_0_15px_rgba(242,183,5,0.15)]' : selectedRole === 'employee' ? 'focus:border-imperial-crimson focus:ring-imperial-crimson border-imperial-crimson/20 focus:shadow-[0_0_15px_rgba(178,24,31,0.15)]' : 'focus:border-white/50 focus:ring-white/50 border-white/10 focus:shadow-[0_0_15px_rgba(255,255,255,0.1)]'}`}
               required
             />
           </div>
@@ -85,14 +85,14 @@ export function LoginView() {
               placeholder="Contraseña"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className={`w-full bg-black/50 border rounded-xl p-4 text-white placeholder-white/30 focus:outline-none focus:ring-1 transition-colors ${selectedRole === 'admin' ? 'focus:border-imperial-gold focus:ring-imperial-gold border-imperial-gold/20' : selectedRole === 'employee' ? 'focus:border-imperial-crimson focus:ring-imperial-crimson border-imperial-crimson/20' : 'focus:border-white/50 focus:ring-white/50 border-white/10'}`}
+              className={`w-full bg-black/40 border rounded-xl p-4 text-white placeholder-white/30 focus:outline-none focus:ring-1 transition-all shadow-inner ${selectedRole === 'admin' ? 'focus:border-imperial-gold focus:ring-imperial-gold border-imperial-gold/20 focus:shadow-[0_0_15px_rgba(242,183,5,0.15)]' : selectedRole === 'employee' ? 'focus:border-imperial-crimson focus:ring-imperial-crimson border-imperial-crimson/20 focus:shadow-[0_0_15px_rgba(178,24,31,0.15)]' : 'focus:border-white/50 focus:ring-white/50 border-white/10 focus:shadow-[0_0_15px_rgba(255,255,255,0.1)]'}`}
               required
             />
           </div>
 
           <button
             type="submit"
-            className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-transform active:scale-95 mt-4 ${selectedRole === 'admin' ? 'bg-imperial-gold text-black hover:bg-imperial-gold/90 shadow-[0_0_15px_rgba(242,183,5,0.3)]' : selectedRole === 'employee' ? 'bg-imperial-crimson text-white hover:bg-imperial-crimson/90 shadow-[0_0_15px_rgba(178,24,31,0.3)]' : 'bg-white text-black hover:bg-white/90 shadow-[0_0_15px_rgba(255,255,255,0.3)]'}`}
+            className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all active:scale-95 mt-6 ${selectedRole === 'admin' ? 'bg-imperial-gold text-black hover:bg-imperial-gold/90 shadow-[0_0_20px_rgba(242,183,5,0.4)]' : selectedRole === 'employee' ? 'bg-imperial-crimson text-white hover:bg-imperial-crimson/90 shadow-[0_0_20px_rgba(178,24,31,0.4)]' : 'bg-white text-black hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.4)]'}`}
           >
             Ingresar <ChevronRight className="w-5 h-5" />
           </button>
