@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Crown, Settings, LogOut, ChevronRight, Gift } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useUserStore } from '../store/useUserStore';
 import { SpinningLogo } from './SpinningLogo';
+import { RewardsView } from './RewardsView';
 
 export function ProfileView() {
   const { puntosImperiales, role, logout } = useUserStore();
+  const [showRewards, setShowRewards] = useState(false);
+
+  if (showRewards) {
+    return <RewardsView onBack={() => setShowRewards(false)} />;
+  }
 
   return (
     <motion.div 
@@ -42,7 +48,10 @@ export function ProfileView() {
       </div>
 
       <div className="space-y-3">
-        <button className="w-full flex items-center justify-between bg-black/40 backdrop-blur-sm border border-white/5 p-4 rounded-2xl hover:bg-white/5 hover:border-white/10 transition-all group shadow-[0_5px_15px_rgba(0,0,0,0.2)]">
+        <button 
+          onClick={() => setShowRewards(true)}
+          className="w-full flex items-center justify-between bg-black/40 backdrop-blur-sm border border-white/5 p-4 rounded-2xl hover:bg-white/5 hover:border-white/10 transition-all group shadow-[0_5px_15px_rgba(0,0,0,0.2)]"
+        >
           <div className="flex items-center gap-3">
             <Gift className="w-5 h-5 text-imperial-gold/70 group-hover:text-imperial-gold transition-colors" />
             <span className="font-bold text-white tracking-wide">Recompensas Disponibles</span>
