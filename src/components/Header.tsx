@@ -3,6 +3,7 @@ import { ShoppingBag, Search, Menu, Crown, Globe } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useUserStore } from '../store/useUserStore';
 import { SpinningLogo } from './SpinningLogo';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface HeaderProps {
   onOpenCart: () => void;
@@ -13,6 +14,7 @@ interface HeaderProps {
 export function Header({ onOpenCart, searchQuery, setSearchQuery }: HeaderProps) {
   const itemCount = useCartStore((state) => state.getItemCount());
   const { puntosImperiales, language, setLanguage } = useUserStore();
+  const { t } = useTranslation();
 
   const toggleLanguage = () => {
     if (language === 'es') setLanguage('en');
@@ -45,7 +47,7 @@ export function Header({ onOpenCart, searchQuery, setSearchQuery }: HeaderProps)
         <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           <div className="flex items-center gap-1 bg-imperial-gold/10 px-1.5 sm:px-2 py-1 rounded-full border border-imperial-gold/20 shadow-[0_0_10px_rgba(242,183,5,0.2)]">
             <Crown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-imperial-gold" />
-            <span className="text-[9px] sm:text-[10px] font-bold text-imperial-gold">{puntosImperiales} <span className="hidden sm:inline">pts</span></span>
+            <span className="text-[9px] sm:text-[10px] font-bold text-imperial-gold">{puntosImperiales} <span className="hidden sm:inline">{t('pts')}</span></span>
           </div>
 
           <button 
@@ -76,7 +78,7 @@ export function Header({ onOpenCart, searchQuery, setSearchQuery }: HeaderProps)
         </div>
         <input
           type="text"
-          placeholder={language === 'es' ? "¿Qué se te antoja hoy?" : language === 'en' ? "What are you craving?" : "你今天想吃什么？"}
+          placeholder={t('searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="block w-full pl-12 pr-4 py-3.5 border border-white/10 rounded-2xl leading-5 bg-black/50 text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-imperial-gold focus:border-imperial-gold sm:text-sm transition-all shadow-inner focus:bg-white/5 focus:shadow-[0_0_15px_rgba(242,183,5,0.15)]"

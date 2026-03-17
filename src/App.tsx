@@ -20,9 +20,11 @@ import { LoginView } from './components/LoginView';
 import { useUserStore } from './store/useUserStore';
 import { AdminApp } from './components/admin/AdminApp';
 import { EmployeeApp } from './components/employee/EmployeeApp';
+import { useTranslation } from './hooks/useTranslation';
 
 export default function App() {
   const { isAuthenticated, role } = useUserStore();
+  const { t, language } = useTranslation();
   const [activeTab, setActiveTab] = useState<'home' | 'orders' | 'profile'>('home');
   const [activeCategory, setActiveCategory] = useState('Arroces');
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,7 +39,11 @@ export default function App() {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(p => 
         p.name.toLowerCase().includes(query) || 
-        p.description?.toLowerCase().includes(query)
+        p.description?.toLowerCase().includes(query) ||
+        p.nameEn?.toLowerCase().includes(query) ||
+        p.descriptionEn?.toLowerCase().includes(query) ||
+        p.nameZh?.toLowerCase().includes(query) ||
+        p.descriptionZh?.toLowerCase().includes(query)
       );
     } else {
       filtered = filtered.filter(p => p.category === activeCategory);
@@ -74,7 +80,7 @@ export default function App() {
             className="bg-imperial-crimson text-white text-xs font-bold text-center py-2 flex items-center justify-center gap-2"
           >
             <WifiOff className="w-4 h-4" />
-            Modo Sin Conexión. Mostrando menú guardado.
+            {t('offlineMode')}
           </motion.div>
         )}
       </AnimatePresence>
@@ -113,13 +119,13 @@ export default function App() {
                       transition={{ delay: 0.2 }}
                     >
                       <span className="inline-block px-3 py-1 bg-imperial-gold/20 text-imperial-gold text-xs font-bold uppercase tracking-widest rounded-full border border-imperial-gold/30 mb-3 backdrop-blur-md">
-                        Especialidad de la Casa
+                        {t('houseSpecialty')}
                       </span>
                       <h2 className="text-4xl font-display font-bold text-white mb-2 drop-shadow-lg">
-                        Arroz Cantones
+                        {language === 'en' ? 'Cantonese Rice' : language === 'zh' ? '广东炒饭' : 'Arroz Cantones'}
                       </h2>
                       <p className="text-white/80 text-sm max-w-md drop-shadow-md">
-                        Nuestra receta secreta familiar, preparada al wok con ingredientes frescos y el auténtico sabor de los Hermanos Balmaceda.
+                        {language === 'en' ? 'Our secret family recipe, wok-prepared with fresh ingredients and the authentic Balmaceda Brothers flavor.' : language === 'zh' ? '我们的家庭秘方，用新鲜食材和正宗的Balmaceda兄弟风味炒制。' : 'Nuestra receta secreta familiar, preparada al wok con ingredientes frescos y el auténtico sabor de los Hermanos Balmaceda.'}
                       </p>
                     </motion.div>
                   </div>
@@ -129,7 +135,7 @@ export default function App() {
                 <div className="px-4 mb-8">
                   <div className="flex items-center gap-2 mb-4">
                     <Flame className="w-5 h-5 text-imperial-crimson" />
-                    <h3 className="text-lg font-display font-bold text-white">Los Más Pedidos</h3>
+                    <h3 className="text-lg font-display font-bold text-white">{t('mostPopular')}</h3>
                   </div>
                   <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
                     {popularProducts.map(product => (
@@ -152,7 +158,9 @@ export default function App() {
 
             <main className="max-w-7xl mx-auto px-4 py-8">
               {!searchQuery && (
-                <h3 className="text-2xl font-display font-bold text-white mb-6 capitalize">{activeCategory}</h3>
+                <h3 className="text-2xl font-display font-bold text-white mb-6 capitalize">
+                  {language === 'en' ? 'Menu' : language === 'zh' ? '菜单' : activeCategory}
+                </h3>
               )}
               <AnimatePresence mode="wait">
                 <motion.div 
@@ -173,7 +181,7 @@ export default function App() {
                     ))
                   ) : (
                     <div className="col-span-full py-20 text-center text-white/40">
-                      <p className="text-lg">No encontramos productos que coincidan con tu búsqueda.</p>
+                      <p className="text-lg">{t('noProductsFound')}</p>
                     </div>
                   )}
                 </motion.div>

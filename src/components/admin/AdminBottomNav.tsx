@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, Utensils, Users, User } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface AdminBottomNavProps {
   activeTab: 'dashboard' | 'menu' | 'staff' | 'profile';
@@ -7,11 +8,13 @@ interface AdminBottomNavProps {
 }
 
 export function AdminBottomNav({ activeTab, setActiveTab }: AdminBottomNavProps) {
+  const { t } = useTranslation();
+  
   const tabs = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Mando' },
-    { id: 'menu', icon: Utensils, label: 'Menú' },
-    { id: 'staff', icon: Users, label: 'Personal' },
-    { id: 'profile', icon: User, label: 'Perfil' },
+    { id: 'dashboard', icon: LayoutDashboard, label: t('adminNavDashboard') },
+    { id: 'menu', icon: Utensils, label: t('adminNavMenu') },
+    { id: 'staff', icon: Users, label: t('adminNavStaff') },
+    { id: 'profile', icon: User, label: t('navProfile') },
   ] as const;
 
   return (

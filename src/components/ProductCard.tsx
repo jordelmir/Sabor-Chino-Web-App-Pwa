@@ -3,6 +3,7 @@ import { Product } from '../data/menuData';
 import { Plus, Minus, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '../store/useCartStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface ProductCardProps {
   product: Product;
@@ -13,6 +14,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
   const formatPrice = (price: number) => `¢${price.toLocaleString('es-CR')}`;
   
   const { items, addItem, updateQuantity, removeItem } = useCartStore();
+  const { t, language } = useTranslation();
   
   // Find if this exact product (without special notes/sizes) is in the cart
   const cartItem = items.find(item => item.product.id === product.id && item.size === 'Unico' && !item.notes);
@@ -42,6 +44,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
     }
   };
 
+  const displayName = language === 'en' && product.nameEn ? product.nameEn : 
+                      language === 'zh' && product.nameZh ? product.nameZh : 
+                      product.name;
+                      
+  const displayDesc = language === 'en' && product.descriptionEn ? product.descriptionEn : 
+                      language === 'zh' && product.descriptionZh ? product.descriptionZh : 
+                      product.description;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -53,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
     >
       {product.popular && (
         <div className="absolute top-0 right-0 bg-imperial-crimson text-white text-[10px] font-bold uppercase tracking-widest py-1.5 px-3.5 rounded-bl-2xl z-10 shadow-[0_0_15px_rgba(178,24,31,0.5)]">
-          Popular
+          {t('popular')}
         </div>
       )}
       
@@ -62,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
         {product.image ? (
           <img 
             src={product.image} 
-            alt={product.name} 
+            alt={displayName} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             referrerPolicy="no-referrer"
           />
@@ -78,11 +88,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
       <div className="p-4 flex flex-col flex-1 -mt-12 relative z-10">
         <div className="flex-1">
           <h3 className="text-xl font-display font-semibold text-white mb-1 leading-tight drop-shadow-md tracking-wide">
-            {product.name}
+            {displayName}
           </h3>
-          {product.description && (
+          {displayDesc && (
             <p className="text-sm text-white/60 mb-3 line-clamp-2 leading-relaxed">
-              {product.description}
+              {displayDesc}
             </p>
           )}
         </div>

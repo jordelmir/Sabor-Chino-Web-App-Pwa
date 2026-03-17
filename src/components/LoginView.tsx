@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useUserStore, Role } from '../store/useUserStore';
+import { useTranslation } from '../hooks/useTranslation';
 import { SpinningLogo } from './SpinningLogo';
 import { User, Shield, Briefcase, ChevronRight } from 'lucide-react';
+import { useUserStore, Role } from '../store/useUserStore';
 
 export function LoginView() {
   const [selectedRole, setSelectedRole] = useState<Role>('client');
   const [email, setEmail] = useState('cliente@saborchino.com');
   const [password, setPassword] = useState('password123');
   const login = useUserStore(state => state.login);
+  const { t } = useTranslation();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,9 +18,9 @@ export function LoginView() {
   };
 
   const roleConfig = {
-    client: { color: 'text-white', bg: 'bg-white/10', border: 'border-white/20', icon: User, title: 'Cliente', mockEmail: 'cliente@saborchino.com', mockPassword: 'password123' },
-    employee: { color: 'text-imperial-crimson', bg: 'bg-imperial-crimson/10', border: 'border-imperial-crimson/30', icon: Briefcase, title: 'Empleado', mockEmail: 'empleado@saborchino.com', mockPassword: 'password123' },
-    admin: { color: 'text-imperial-gold', bg: 'bg-imperial-gold/10', border: 'border-imperial-gold/30', icon: Shield, title: 'Admin', mockEmail: 'admin@saborchino.com', mockPassword: 'password123' }
+    client: { color: 'text-white', bg: 'bg-white/10', border: 'border-white/20', icon: User, title: t('greetingClient'), mockEmail: 'cliente@saborchino.com', mockPassword: 'password123' },
+    employee: { color: 'text-imperial-crimson', bg: 'bg-imperial-crimson/10', border: 'border-imperial-crimson/30', icon: Briefcase, title: t('greetingEmployee'), mockEmail: 'empleado@saborchino.com', mockPassword: 'password123' },
+    admin: { color: 'text-imperial-gold', bg: 'bg-imperial-gold/10', border: 'border-imperial-gold/30', icon: Shield, title: t('greetingAdmin'), mockEmail: 'admin@saborchino.com', mockPassword: 'password123' }
   };
 
   const handleRoleSelect = (role: Role) => {
@@ -46,8 +48,8 @@ export function LoginView() {
           <SpinningLogo size="xl" className="drop-shadow-[0_0_15px_rgba(242,183,5,0.3)]" />
         </div>
 
-        <h2 className="text-3xl font-display font-bold text-center text-white mb-2 tracking-wide">Portal Imperial</h2>
-        <p className="text-center text-white/50 mb-8 text-sm font-medium tracking-widest uppercase">Selecciona tu nivel de acceso</p>
+        <h2 className="text-3xl font-display font-bold text-center text-white mb-2 tracking-wide">{t('loginTitle')}</h2>
+        <p className="text-center text-white/50 mb-8 text-sm font-medium tracking-widest uppercase">{t('loginSubtitle')}</p>
 
         <div className="grid grid-cols-3 gap-3 mb-8">
           {(Object.keys(roleConfig) as Role[]).filter(r => r !== 'guest').map((role) => {
@@ -94,7 +96,7 @@ export function LoginView() {
             type="submit"
             className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all active:scale-95 mt-6 ${selectedRole === 'admin' ? 'bg-imperial-gold text-black hover:bg-imperial-gold/90 shadow-[0_0_20px_rgba(242,183,5,0.4)]' : selectedRole === 'employee' ? 'bg-imperial-crimson text-white hover:bg-imperial-crimson/90 shadow-[0_0_20px_rgba(178,24,31,0.4)]' : 'bg-white text-black hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.4)]'}`}
           >
-            Ingresar <ChevronRight className="w-5 h-5" />
+            {t('loginClient').split(' ')[0]} <ChevronRight className="w-5 h-5" />
           </button>
         </form>
       </motion.div>

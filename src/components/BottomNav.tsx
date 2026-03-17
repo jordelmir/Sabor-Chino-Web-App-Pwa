@@ -1,5 +1,6 @@
 import React from 'react';
 import { Home, ListOrdered, User } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface BottomNavProps {
   activeTab: 'home' | 'orders' | 'profile';
@@ -7,10 +8,12 @@ interface BottomNavProps {
 }
 
 export function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
+  const { t } = useTranslation();
+
   const tabs = [
-    { id: 'home', icon: Home, label: 'Menú' },
-    { id: 'orders', icon: ListOrdered, label: 'Pedidos' },
-    { id: 'profile', icon: User, label: 'Perfil' },
+    { id: 'home', icon: Home, label: t('navMenu') },
+    { id: 'orders', icon: ListOrdered, label: t('navOrders') },
+    { id: 'profile', icon: User, label: t('navProfile') },
   ] as const;
 
   return (

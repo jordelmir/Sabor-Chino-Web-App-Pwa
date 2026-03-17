@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '../store/useCartStore';
 import { useOrderStore } from '../store/useOrderStore';
+import { useTranslation } from '../hooks/useTranslation';
 import { X, MapPin, CreditCard, Banknote, Smartphone, ScanFace, FileText } from 'lucide-react';
 
 interface CheckoutModalProps {
@@ -16,15 +17,16 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [paymentMethod, setPaymentMethod] = useState<'SINPE' | 'Tarjeta' | 'Efectivo'>('SINPE');
   const [receiptNumber, setReceiptNumber] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { t } = useTranslation();
 
   const handleConfirm = () => {
     if (!address) {
-      alert('Por favor ingresa una dirección de entrega.');
+      alert(t('enterAddress'));
       return;
     }
 
     if (paymentMethod === 'SINPE' && !receiptNumber) {
-      alert('Por favor ingresa el número de comprobante SINPE.');
+      alert(t('enterReceipt'));
       return;
     }
 
@@ -58,8 +60,8 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       
       // Optionally, we could still send a WhatsApp message or just rely on the internal system
       alert(paymentMethod === 'SINPE' 
-        ? 'Pedido enviado. Estamos validando tu comprobante de pago.' 
-        : 'Pedido enviado a la cocina.');
+        ? t('orderSentSinpe') 
+        : t('orderSent'));
         
     }, 1500);
   };
@@ -91,25 +93,25 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 <X className="w-5 h-5" />
               </button>
 
-              <h2 className="text-2xl font-display font-bold text-white mb-6 tracking-wide">Finalizar Pedido</h2>
+              <h2 className="text-2xl font-display font-bold text-white mb-6 tracking-wide">{t('checkoutTitle')}</h2>
 
               <div className="space-y-6">
                 {/* Address Section */}
                 <div>
                   <h3 className="text-sm font-bold text-white/80 mb-3 uppercase tracking-widest flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-imperial-gold drop-shadow-[0_0_8px_rgba(242,183,5,0.5)]" />
-                    Dirección de Entrega
+                    {t('deliveryAddress')}
                   </h3>
                   <div className="relative">
                     <textarea
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Ej. 100m sur de la iglesia, casa blanca con portón negro..."
+                      placeholder={t('addressPlaceholder')}
                       className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold resize-none h-24 shadow-inner focus:shadow-[0_0_15px_rgba(242,183,5,0.15)] transition-all"
                       disabled={isAuthenticating}
                     />
                     <button className="absolute bottom-3 right-3 text-xs bg-imperial-gold/20 text-imperial-gold px-3 py-1.5 rounded-full font-bold flex items-center gap-1 hover:bg-imperial-gold/30 transition-colors border border-imperial-gold/30">
-                      <MapPin className="w-3 h-3" /> Usar GPS
+                      <MapPin className="w-3 h-3" /> {t('useGPS')}
                     </button>
                   </div>
                 </div>
@@ -118,7 +120,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 <div>
                   <h3 className="text-sm font-bold text-white/80 mb-3 uppercase tracking-widest flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-imperial-gold drop-shadow-[0_0_8px_rgba(242,183,5,0.5)]" />
-                    Método de Pago
+                    {t('paymentMethod')}
                   </h3>
                   <div className="grid grid-cols-3 gap-3">
                     <button
@@ -143,7 +145,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       }`}
                     >
                       <CreditCard className="w-6 h-6" />
-                      <span className="text-xs font-bold">Tarjeta</span>
+                      <span className="text-xs font-bold">{t('card')}</span>
                     </button>
                     <button
                       onClick={() => setPaymentMethod('Efectivo')}
@@ -155,7 +157,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       }`}
                     >
                       <Banknote className="w-6 h-6" />
-                      <span className="text-xs font-bold">Efectivo</span>
+                      <span className="text-xs font-bold">{t('cash')}</span>
                     </button>
                   </div>
                 </div>
@@ -171,18 +173,18 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     >
                       <div className="p-4 bg-imperial-gold/10 border border-imperial-gold/20 rounded-2xl space-y-3">
                         <p className="text-sm text-white/80">
-                          1. Transfiere el total a SINPE Móvil: <span className="font-bold text-imperial-gold text-base tracking-wider">6039-4591</span> (Sabor Chino)
+                          {t('sinpeStep1')} <span className="font-bold text-imperial-gold text-base tracking-wider">6039-4591</span> (Sabor Chino)
                         </p>
                         <div className="space-y-2">
                           <label className="text-sm text-white/80 flex items-center gap-2">
                             <FileText className="w-4 h-4 text-imperial-gold" />
-                            2. Ingresa el número de comprobante:
+                            {t('sinpeStep2')}
                           </label>
                           <input
                             type="text"
                             value={receiptNumber}
                             onChange={(e) => setReceiptNumber(e.target.value)}
-                            placeholder="Ej. 123456789"
+                            placeholder={t('receiptPlaceholder')}
                             className="w-full bg-black/40 border border-imperial-gold/30 rounded-xl p-3 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold shadow-inner transition-all"
                             disabled={isAuthenticating}
                           />
@@ -195,7 +197,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 {/* Total & Confirm */}
                 <div className="pt-6 border-t border-white/10">
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-white/50 uppercase tracking-widest text-xs font-bold">Total a Pagar</span>
+                    <span className="text-white/50 uppercase tracking-widest text-xs font-bold">{t('totalToPay')}</span>
                     <span className="text-3xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">
                       ¢{getTotal().toLocaleString('es-CR')}
                     </span>
@@ -213,12 +215,12 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                         className="flex items-center gap-2"
                       >
                         <ScanFace className="w-6 h-6 animate-pulse" />
-                        <span>Verificando FaceID...</span>
+                        <span>{t('verifyingFaceID')}</span>
                       </motion.div>
                     ) : (
                       <>
                         <ScanFace className="w-6 h-6" />
-                        {paymentMethod === 'SINPE' ? 'Enviar Comprobante y Pagar' : 'Confirmar y Pagar'}
+                        {paymentMethod === 'SINPE' ? t('sendReceiptAndPay') : t('confirmAndPay')}
                       </>
                     )}
                   </button>

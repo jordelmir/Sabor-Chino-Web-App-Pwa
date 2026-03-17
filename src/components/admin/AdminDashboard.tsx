@@ -2,19 +2,22 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Activity, DollarSign, BrainCircuit, ChevronRight, Package, Users, ArrowUpRight, ArrowDownRight, Clock } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useTranslation } from '../../hooks/useTranslation';
 import { SpinningLogo } from '../SpinningLogo';
 
-const data = [
-  { name: 'Lun', sales: 4000 },
-  { name: 'Mar', sales: 3000 },
-  { name: 'Mié', sales: 2000 },
-  { name: 'Jue', sales: 2780 },
-  { name: 'Vie', sales: 5890 },
-  { name: 'Sáb', sales: 8390 },
-  { name: 'Dom', sales: 7490 },
-];
-
 export function AdminDashboard() {
+  const { t } = useTranslation();
+  
+  const data = [
+    { name: t('dayMon'), sales: 4000 },
+    { name: t('dayTue'), sales: 3000 },
+    { name: t('dayWed'), sales: 2000 },
+    { name: t('dayThu'), sales: 2780 },
+    { name: t('dayFri'), sales: 5890 },
+    { name: t('daySat'), sales: 8390 },
+    { name: t('daySun'), sales: 7490 },
+  ];
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -25,9 +28,9 @@ export function AdminDashboard() {
       <header className="flex items-center justify-between mb-8 bg-zinc-950/50 p-6 rounded-3xl border border-white/5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
         <div>
           <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-            Mando <span className="text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.5)]">Imperial</span>
+            {t('adminDashboardTitle1')} <span className="text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.5)]">{t('adminDashboardTitle2')}</span>
           </h1>
-          <p className="text-sm text-white/50 mt-1.5 font-medium tracking-wide">Visión global del imperio gastronómico</p>
+          <p className="text-sm text-white/50 mt-1.5 font-medium tracking-wide">{t('adminDashboardSubtitle')}</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/5">
@@ -52,19 +55,19 @@ export function AdminDashboard() {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-imperial-gold font-bold text-sm uppercase tracking-widest flex items-center gap-2">
-                Sugerencia de IA <span className="w-2 h-2 rounded-full bg-imperial-gold animate-ping"></span>
+                {t('aiSuggestion')} <span className="w-2 h-2 rounded-full bg-imperial-gold animate-ping"></span>
               </h3>
-              <span className="text-xs text-white/40 font-medium bg-black/40 px-2 py-1 rounded-lg border border-white/5">Hace 5 min</span>
+              <span className="text-xs text-white/40 font-medium bg-black/40 px-2 py-1 rounded-lg border border-white/5">{t('minsAgo').replace('{min}', '5')}</span>
             </div>
             <p className="text-white/90 text-sm leading-relaxed mb-4 max-w-3xl">
-              Detectamos un evento deportivo a 2km a las 8:00 PM. Históricamente, esto aumenta la demanda de <strong className="text-white">Combos Familiares</strong> en un 45%. Sugerimos preparar 20% más base de Arroz Cantonés.
+              {t('aiSuggestionText')}
             </p>
             <div className="flex gap-3">
               <button className="bg-imperial-gold text-black px-5 py-2 rounded-xl text-xs font-bold hover:bg-imperial-gold/90 transition-all shadow-[0_0_15px_rgba(242,183,5,0.3)] flex items-center gap-1.5">
-                Aplicar Ajuste <ChevronRight className="w-4 h-4" />
+                {t('applyAdjustment')} <ChevronRight className="w-4 h-4" />
               </button>
               <button className="bg-white/5 text-white/60 px-5 py-2 rounded-xl text-xs font-bold hover:bg-white/10 hover:text-white transition-all border border-white/10">
-                Ignorar
+                {t('ignore')}
               </button>
             </div>
           </div>
@@ -84,7 +87,7 @@ export function AdminDashboard() {
             </span>
           </div>
           <div className="relative z-10">
-            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">Ventas Hoy</p>
+            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">{t('salesToday')}</p>
             <h4 className="text-3xl font-display font-bold text-white tracking-tight drop-shadow-md">¢452.5K</h4>
           </div>
         </div>
@@ -96,11 +99,11 @@ export function AdminDashboard() {
               <Activity className="w-6 h-6 text-imperial-crimson drop-shadow-[0_0_8px_rgba(178,24,31,0.5)]" />
             </div>
             <span className="flex items-center gap-1.5 text-xs font-bold text-imperial-crimson bg-imperial-crimson/10 px-2.5 py-1.5 rounded-xl border border-imperial-crimson/20 shadow-inner">
-              <span className="w-1.5 h-1.5 rounded-full bg-imperial-crimson animate-pulse shadow-[0_0_8px_rgba(178,24,31,0.8)]"></span> En curso
+              <span className="w-1.5 h-1.5 rounded-full bg-imperial-crimson animate-pulse shadow-[0_0_8px_rgba(178,24,31,0.8)]"></span> {t('inProgress')}
             </span>
           </div>
           <div className="relative z-10">
-            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">Pedidos Activos</p>
+            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">{t('activeOrders')}</p>
             <h4 className="text-3xl font-display font-bold text-white tracking-tight drop-shadow-md">14</h4>
           </div>
         </div>
@@ -116,7 +119,7 @@ export function AdminDashboard() {
             </span>
           </div>
           <div className="relative z-10">
-            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">Ticket Promedio</p>
+            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">{t('averageTicket')}</p>
             <h4 className="text-3xl font-display font-bold text-white tracking-tight drop-shadow-md">¢12,450</h4>
           </div>
         </div>
@@ -132,7 +135,7 @@ export function AdminDashboard() {
             </span>
           </div>
           <div className="relative z-10">
-            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">Nuevos Clientes</p>
+            <p className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1.5">{t('newCustomers')}</p>
             <h4 className="text-3xl font-display font-bold text-white tracking-tight drop-shadow-md">28</h4>
           </div>
         </div>
@@ -143,13 +146,13 @@ export function AdminDashboard() {
         <div className="lg:col-span-2 bg-zinc-950/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3 className="text-xl font-bold text-white mb-1 tracking-wide">Rendimiento Semanal</h3>
-              <p className="text-xs text-white/50 font-medium tracking-widest uppercase">Ingresos brutos por día</p>
+              <h3 className="text-xl font-bold text-white mb-1 tracking-wide">{t('weeklyPerformance')}</h3>
+              <p className="text-xs text-white/50 font-medium tracking-widest uppercase">{t('grossRevenue')}</p>
             </div>
             <select className="bg-black/50 border border-white/10 text-white text-sm font-medium rounded-xl px-4 py-2 outline-none focus:border-imperial-gold transition-colors cursor-pointer shadow-inner">
-              <option>Esta Semana</option>
-              <option>Semana Pasada</option>
-              <option>Este Mes</option>
+              <option>{t('thisWeek')}</option>
+              <option>{t('lastWeek')}</option>
+              <option>{t('thisMonth')}</option>
             </select>
           </div>
           <div className="h-72 w-full">
@@ -167,7 +170,7 @@ export function AdminDashboard() {
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#09090b', borderColor: '#ffffff20', borderRadius: '16px', color: '#fff', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}
                   itemStyle={{ color: '#F2B705', fontWeight: 'bold' }}
-                  formatter={(value: number) => [`¢${value.toLocaleString()}`, 'Ventas']}
+                  formatter={(value: number) => [`¢${value.toLocaleString()}`, t('sales')]}
                   labelStyle={{ color: '#ffffff80', marginBottom: '4px' }}
                 />
                 <Area type="monotone" dataKey="sales" stroke="#F2B705" strokeWidth={4} fillOpacity={1} fill="url(#colorSales)" activeDot={{ r: 6, fill: '#F2B705', stroke: '#000', strokeWidth: 2 }} />
@@ -180,18 +183,18 @@ export function AdminDashboard() {
         <div className="bg-zinc-950/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h3 className="text-xl font-bold text-white mb-1 tracking-wide">Flujo en Vivo</h3>
-              <p className="text-xs text-white/50 font-medium tracking-widest uppercase">Últimos pedidos</p>
+              <h3 className="text-xl font-bold text-white mb-1 tracking-wide">{t('liveFeed')}</h3>
+              <p className="text-xs text-white/50 font-medium tracking-widest uppercase">{t('latestOrders')}</p>
             </div>
-            <button className="text-xs font-bold text-imperial-gold hover:text-white transition-colors bg-imperial-gold/10 px-3 py-1.5 rounded-lg border border-imperial-gold/20 shadow-inner">Ver todos</button>
+            <button className="text-xs font-bold text-imperial-gold hover:text-white transition-colors bg-imperial-gold/10 px-3 py-1.5 rounded-lg border border-imperial-gold/20 shadow-inner">{t('viewAll')}</button>
           </div>
           <div className="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-2">
             {[
-              { id: '8495', time: 'Hace 2 min', items: 'Combo Familiar + Wantán', total: 18500, status: 'preparando' },
-              { id: '8494', time: 'Hace 5 min', items: 'Arroz Especial (Grande)', total: 6500, status: 'listo' },
-              { id: '8493', time: 'Hace 12 min', items: 'Chop Suey + 2 Rollitos', total: 8000, status: 'entregado' },
-              { id: '8492', time: 'Hace 18 min', items: 'Pollo Agridulce + Arroz', total: 9500, status: 'entregado' },
-              { id: '8491', time: 'Hace 25 min', items: 'Sopa de Mariscos', total: 5500, status: 'entregado' },
+              { id: '8495', time: t('minsAgo').replace('{min}', '2'), items: 'Combo Familiar + Wantán', total: 18500, status: 'preparando' },
+              { id: '8494', time: t('minsAgo').replace('{min}', '5'), items: 'Arroz Especial (Grande)', total: 6500, status: 'listo' },
+              { id: '8493', time: t('minsAgo').replace('{min}', '12'), items: 'Chop Suey + 2 Rollitos', total: 8000, status: 'entregado' },
+              { id: '8492', time: t('minsAgo').replace('{min}', '18'), items: 'Pollo Agridulce + Arroz', total: 9500, status: 'entregado' },
+              { id: '8491', time: t('minsAgo').replace('{min}', '25'), items: 'Sopa de Mariscos', total: 5500, status: 'entregado' },
             ].map((order, i) => (
               <div key={i} className="bg-black/40 border border-white/5 rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 hover:border-white/10 transition-all cursor-pointer group">
                 <div className="flex items-center gap-4">
@@ -206,7 +209,7 @@ export function AdminDashboard() {
                 </div>
                 <div className="text-right shrink-0 ml-2">
                   <div className="font-bold text-imperial-gold text-sm group-hover:scale-105 transition-transform">¢{order.total.toLocaleString()}</div>
-                  <div className="text-[9px] uppercase tracking-widest text-white/40 mt-1 font-bold">{order.status}</div>
+                  <div className="text-[9px] uppercase tracking-widest text-white/40 mt-1 font-bold">{t(`status${order.status.charAt(0).toUpperCase() + order.status.slice(1)}` as any)}</div>
                 </div>
               </div>
             ))}

@@ -4,6 +4,7 @@ import { useCartStore } from '../store/useCartStore';
 import { X, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { CheckoutModal } from './CheckoutModal';
 import { SpinningLogo } from './SpinningLogo';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface CartDrawerProps {
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items, updateQuantity, removeItem, getTotal } = useCartStore();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const { t, language } = useTranslation();
 
   const handleCheckout = () => {
     setIsCheckoutOpen(true);
@@ -40,7 +42,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <div className="flex items-center justify-between p-6 border-b border-white/10 bg-black/20">
                 <div className="flex items-center gap-3">
                   <ShoppingBag className="w-6 h-6 text-imperial-gold drop-shadow-[0_0_8px_rgba(242,183,5,0.5)]" />
-                  <h2 className="text-xl font-display font-bold text-white tracking-wide">Tu Pedido</h2>
+                  <h2 className="text-xl font-display font-bold text-white tracking-wide">{t('yourOrder')}</h2>
                 </div>
                 <button 
                   onClick={onClose}
@@ -54,12 +56,12 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 {items.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-white/40">
                     <SpinningLogo size="xl" className="mb-6 opacity-30 drop-shadow-[0_0_15px_rgba(242,183,5,0.2)]" />
-                    <p className="text-lg font-medium tracking-wide">Tu carrito está vacío</p>
+                    <p className="text-lg font-medium tracking-wide">{t('emptyCart')}</p>
                     <button 
                       onClick={onClose}
                       className="mt-6 text-imperial-gold font-bold hover:text-imperial-gold/80 bg-imperial-gold/10 px-6 py-2.5 rounded-xl border border-imperial-gold/20 transition-all hover:bg-imperial-gold/20"
                     >
-                      Ver el menú
+                      {t('viewMenu')}
                     </button>
                   </div>
                 ) : (
@@ -67,12 +69,16 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     const itemPrice = item.size === 'Medio' && item.product.priceMedio 
                       ? item.product.priceMedio 
                       : item.product.price;
+                      
+                    const displayName = language === 'en' && item.product.nameEn ? item.product.nameEn : 
+                                        language === 'zh' && item.product.nameZh ? item.product.nameZh : 
+                                        item.product.name;
                     
                     return (
                       <div key={item.id} className="flex gap-4 bg-black/40 p-4 rounded-2xl border border-white/5 hover:border-white/10 transition-colors group">
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-1">
-                            <h3 className="font-bold text-white text-sm">{item.product.name}</h3>
+                            <h3 className="font-bold text-white text-sm">{displayName}</h3>
                             <button 
                               onClick={() => removeItem(item.id)}
                               className="text-white/40 hover:text-imperial-crimson transition-colors p-1.5 rounded-lg hover:bg-imperial-crimson/10"
@@ -81,8 +87,8 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             </button>
                           </div>
                           <div className="text-xs text-white/50 mb-2 font-medium">
-                            Tamaño: {item.size}
-                            {item.notes && <span className="block mt-1 italic text-imperial-gold/70">Nota: {item.notes}</span>}
+                            {t('size')}: {item.size === 'Entero' ? t('sizeFull') : item.size === 'Medio' ? t('sizeHalf') : item.size}
+                            {item.notes && <span className="block mt-1 italic text-imperial-gold/70">{t('specialNotes')}: {item.notes}</span>}
                           </div>
                           <div className="font-bold text-imperial-gold text-sm">
                             ¢{(itemPrice * item.quantity).toLocaleString('es-CR')}
@@ -113,7 +119,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               {items.length > 0 && (
                 <div className="p-6 pb-8 sm:pb-6 border-t border-white/10 bg-black/40 backdrop-blur-md">
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-white/50 uppercase tracking-widest text-xs font-bold">Total a Pagar</span>
+                    <span className="text-white/50 uppercase tracking-widest text-xs font-bold">{t('totalToPay')}</span>
                     <span className="text-2xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">
                       ¢{getTotal().toLocaleString('es-CR')}
                     </span>
@@ -122,7 +128,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     onClick={handleCheckout}
                     className="w-full bg-imperial-gold text-black font-bold text-lg py-4 rounded-2xl hover:bg-imperial-gold/90 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(242,183,5,0.4)]"
                   >
-                    Ir a Pagar
+                    {t('checkout')}
                   </button>
                 </div>
               )}

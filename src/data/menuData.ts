@@ -3,7 +3,11 @@ export type SizeOption = 'Entero' | 'Medio' | 'Unico';
 export interface Product {
   id: string;
   name: string;
+  nameEn?: string;
+  nameZh?: string;
   description?: string;
+  descriptionEn?: string;
+  descriptionZh?: string;
   category: string;
   price: number;
   priceMedio?: number;
@@ -12,18 +16,18 @@ export interface Product {
 }
 
 export const CATEGORIES = [
-  { id: 'Promociones', name: 'Promociones', icon: '🎉' },
-  { id: 'Combos', name: 'Combos', icon: '🍱' },
-  { id: 'Arroces', name: 'Arroces', icon: '🍚' },
-  { id: 'Sopas', name: 'Sopas', icon: '🥣' },
-  { id: 'Chopsuey', name: 'Chopsuey', icon: '🍜' },
-  { id: 'Chowmein', name: 'Chowmein', icon: '🍝' },
-  { id: 'Wan Tan', name: 'Wan Tan', icon: '🥟' },
-  { id: 'Tacos Chinos', name: 'Tacos Chinos', icon: '🌮' },
-  { id: 'Papas Fritas', name: 'Papas Fritas', icon: '🍟' },
-  { id: 'Alitas de Pollo', name: 'Alitas de Pollo', icon: '🍗' },
-  { id: 'Casados Especiales', name: 'Casados Especiales', icon: '🍛' },
-  { id: 'Especialidades', name: 'Especialidades', icon: '🥩' },
+  { id: 'Promociones', name: 'Promociones', nameEn: 'Promotions', nameZh: '促销', icon: '🎉' },
+  { id: 'Combos', name: 'Combos', nameEn: 'Combos', nameZh: '套餐', icon: '🍱' },
+  { id: 'Arroces', name: 'Arroces', nameEn: 'Rice', nameZh: '米饭', icon: '🍚' },
+  { id: 'Sopas', name: 'Sopas', nameEn: 'Soups', nameZh: '汤类', icon: '🥣' },
+  { id: 'Chopsuey', name: 'Chopsuey', nameEn: 'Chop Suey', nameZh: '炒杂碎', icon: '🍜' },
+  { id: 'Chowmein', name: 'Chowmein', nameEn: 'Chow Mein', nameZh: '炒面', icon: '🍝' },
+  { id: 'Wan Tan', name: 'Wan Tan', nameEn: 'Wonton', nameZh: '馄饨', icon: '🥟' },
+  { id: 'Tacos Chinos', name: 'Tacos Chinos', nameEn: 'Spring Rolls', nameZh: '春卷', icon: '🌮' },
+  { id: 'Papas Fritas', name: 'Papas Fritas', nameEn: 'French Fries', nameZh: '炸薯条', icon: '🍟' },
+  { id: 'Alitas de Pollo', name: 'Alitas de Pollo', nameEn: 'Chicken Wings', nameZh: '鸡翅', icon: '🍗' },
+  { id: 'Casados Especiales', name: 'Casados Especiales', nameEn: 'Special Casados', nameZh: '特色套餐', icon: '🍛' },
+  { id: 'Especialidades', name: 'Especialidades', nameEn: 'Specialties', nameZh: '特色菜', icon: '🥩' },
 ];
 
 export const MENU_DATA: Product[] = [

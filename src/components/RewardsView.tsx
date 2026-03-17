@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Trophy, Medal, Gift, Crown, Star, Loader2 } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
-import { rewardsService, LeaderboardUser } from '../services/rewardsService';
+import { useTranslation } from '../hooks/useTranslation';
+import { LeaderboardUser, rewardsService } from '../services/rewardsService';
 
 interface RewardsViewProps {
   onBack: () => void;
@@ -12,6 +13,7 @@ export function RewardsView({ onBack }: RewardsViewProps) {
   const { puntosImperiales } = useUserStore();
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -44,7 +46,7 @@ export function RewardsView({ onBack }: RewardsViewProps) {
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
         <h2 className="text-2xl font-display font-bold text-white tracking-wide">
-          Recompensas
+          {t('rewardsTitle')}
         </h2>
       </div>
 
@@ -58,14 +60,14 @@ export function RewardsView({ onBack }: RewardsViewProps) {
             <Trophy className="w-8 h-8 text-black" />
           </div>
           <h3 className="text-xl font-display font-bold text-imperial-gold mb-2 drop-shadow-md">
-            Gran Premio Anual
+            {t('grandPrizeTitle')}
           </h3>
           <p className="text-white/90 font-medium mb-4 leading-relaxed">
-            El cliente #1 en el Top Global al <span className="text-imperial-gold font-bold">31 de Diciembre</span> ganará un <span className="font-bold text-white">Arroz Sabor Chino</span> gratis.
+            {t('grandPrizeDesc1')}<span className="text-imperial-gold font-bold">{t('grandPrizeDate')}</span>{t('grandPrizeDesc2')}<span className="font-bold text-white">{t('grandPrizeItem')}</span>{t('grandPrizeDesc3')}
           </p>
           <div className="inline-flex items-center gap-2 bg-black/50 px-4 py-2 rounded-full border border-white/10">
             <Gift className="w-4 h-4 text-imperial-gold" />
-            <span className="text-xs text-white/80 uppercase tracking-wider font-bold">Retirable en restaurante</span>
+            <span className="text-xs text-white/80 uppercase tracking-wider font-bold">{t('redeemableTitle')}</span>
           </div>
         </div>
       </div>
@@ -75,16 +77,16 @@ export function RewardsView({ onBack }: RewardsViewProps) {
         <div className="p-6 border-b border-white/10 bg-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <GlobeIcon className="w-6 h-6 text-imperial-gold" />
-            <h3 className="text-lg font-bold text-white tracking-wide">Top 10 Global</h3>
+            <h3 className="text-lg font-bold text-white tracking-wide">{t('globalTop')}</h3>
           </div>
-          <span className="text-xs text-white/50 uppercase tracking-widest font-bold">Temporada 2026</span>
+          <span className="text-xs text-white/50 uppercase tracking-widest font-bold">{t('season')}</span>
         </div>
         
         <div className="divide-y divide-white/5">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Loader2 className="w-8 h-8 text-imperial-gold animate-spin mb-4" />
-              <p className="text-white/60 font-medium">Actualizando ranking global...</p>
+              <p className="text-white/60 font-medium">{t('updatingRank')}</p>
             </div>
           ) : (
             leaderboard.map((user, index) => (
@@ -111,7 +113,7 @@ export function RewardsView({ onBack }: RewardsViewProps) {
                       {user.name}
                     </p>
                     {user.isCurrentUser && (
-                      <p className="text-[10px] text-imperial-gold/80 uppercase tracking-wider font-bold">Tu posición</p>
+                      <p className="text-[10px] text-imperial-gold/80 uppercase tracking-wider font-bold">{t('yourPosition')}</p>
                     )}
                   </div>
                 </div>

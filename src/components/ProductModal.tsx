@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Product, SizeOption } from '../data/menuData';
 import { useCartStore } from '../store/useCartStore';
 import { X, Minus, Plus, Image as ImageIcon } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface ProductModalProps {
   product: Product | null;
@@ -14,6 +15,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
   const [size, setSize] = useState<SizeOption>('Entero');
   const [notes, setNotes] = useState('');
   const addItem = useCartStore(state => state.addItem);
+  const { t, language } = useTranslation();
 
   if (!product) return null;
 
@@ -28,6 +30,14 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
     setSize('Entero');
     setNotes('');
   };
+
+  const displayName = language === 'en' && product.nameEn ? product.nameEn : 
+                      language === 'zh' && product.nameZh ? product.nameZh : 
+                      product.name;
+                      
+  const displayDesc = language === 'en' && product.descriptionEn ? product.descriptionEn : 
+                      language === 'zh' && product.descriptionZh ? product.descriptionZh : 
+                      product.description;
 
   return (
     <AnimatePresence>
@@ -51,7 +61,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             {product.image ? (
               <img 
                 src={product.image} 
-                alt={product.name} 
+                alt={displayName} 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
@@ -70,14 +80,14 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             </button>
 
             <div className="absolute bottom-0 left-0 right-0 p-6 pb-2">
-              <h2 className="text-3xl font-display font-bold text-white mb-1 drop-shadow-lg leading-tight tracking-wide">{product.name}</h2>
+              <h2 className="text-3xl font-display font-bold text-white mb-1 drop-shadow-lg leading-tight tracking-wide">{displayName}</h2>
               <div className="flex items-center gap-3">
                 <span className="text-2xl font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.4)]">
                   ¢{currentPrice.toLocaleString('es-CR')}
                 </span>
                 {product.popular && (
                   <span className="bg-imperial-crimson text-white text-[10px] font-bold uppercase tracking-widest py-1 px-2.5 rounded-md shadow-[0_0_10px_rgba(178,24,31,0.5)]">
-                    Popular
+                    {t('popular')}
                   </span>
                 )}
               </div>
@@ -86,13 +96,13 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
 
           {/* Scrollable Content */}
           <div className="p-6 overflow-y-auto custom-scrollbar">
-            {product.description && (
-              <p className="text-white/70 text-base mb-8 leading-relaxed font-medium">{product.description}</p>
+            {displayDesc && (
+              <p className="text-white/70 text-base mb-8 leading-relaxed font-medium">{displayDesc}</p>
             )}
 
             {hasSizes && (
               <div className="mb-8">
-                <h3 className="text-xs font-bold text-white/50 mb-3 uppercase tracking-widest">Tamaño</h3>
+                <h3 className="text-xs font-bold text-white/50 mb-3 uppercase tracking-widest">{t('size')}</h3>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setSize('Entero')}
@@ -102,7 +112,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                         : 'border-white/10 bg-black/40 text-white/60 hover:bg-white/5 hover:border-white/20'
                     }`}
                   >
-                    <div className="font-bold mb-1">Entero</div>
+                    <div className="font-bold mb-1">{t('sizeFull')}</div>
                     <div className="text-sm opacity-80 font-medium">¢{product.price.toLocaleString('es-CR')}</div>
                   </button>
                   <button
@@ -113,7 +123,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                         : 'border-white/10 bg-black/40 text-white/60 hover:bg-white/5 hover:border-white/20'
                     }`}
                   >
-                    <div className="font-bold mb-1">Medio</div>
+                    <div className="font-bold mb-1">{t('sizeHalf')}</div>
                     <div className="text-sm opacity-80 font-medium">¢{product.priceMedio?.toLocaleString('es-CR')}</div>
                   </button>
                 </div>
@@ -121,11 +131,11 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             )}
 
             <div className="mb-8">
-              <h3 className="text-xs font-bold text-white/50 mb-3 uppercase tracking-widest">Notas Especiales (Opcional)</h3>
+              <h3 className="text-xs font-bold text-white/50 mb-3 uppercase tracking-widest">{t('specialNotes')}</h3>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Ej. Sin cebollino, extra salsa de soya..."
+                placeholder={t('specialNotesPlaceholder')}
                 className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold resize-none h-24 transition-all shadow-inner focus:shadow-[0_0_15px_rgba(242,183,5,0.15)]"
               />
             </div>
@@ -149,7 +159,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                   </button>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-white/40 uppercase tracking-widest mb-1 font-bold">Total Calculado</div>
+                  <div className="text-xs text-white/40 uppercase tracking-widest mb-1 font-bold">{t('calculatedTotal')}</div>
                   <div className="text-3xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">
                     ¢{(currentPrice * quantity).toLocaleString('es-CR')}
                   </div>
@@ -160,7 +170,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                 onClick={handleAdd}
                 className="w-full bg-imperial-gold text-black font-bold text-lg py-4 rounded-2xl hover:bg-imperial-gold/90 transition-all active:scale-[0.98] shadow-[0_0_20px_rgba(242,183,5,0.4)]"
               >
-                Agregar al Pedido
+                {t('addToOrder')}
               </button>
             </div>
           </div>

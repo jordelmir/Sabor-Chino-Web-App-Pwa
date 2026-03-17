@@ -1,5 +1,6 @@
 import { CATEGORIES } from '../data/menuData';
 import { motion } from 'framer-motion';
+import { useUserStore } from '../store/useUserStore';
 
 interface CategoryListProps {
   activeCategory: string;
@@ -7,11 +8,16 @@ interface CategoryListProps {
 }
 
 export function CategoryList({ activeCategory, setActiveCategory }: CategoryListProps) {
+  const { language } = useUserStore();
+
   return (
     <div className="sticky top-[105px] z-30 bg-zinc-950/90 backdrop-blur-2xl border-b border-white/10 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
       <div className="flex overflow-x-auto hide-scrollbar px-4 gap-3 snap-x">
         {CATEGORIES.map((category) => {
           const isActive = activeCategory === category.name;
+          const displayName = language === 'en' && category.nameEn ? category.nameEn : 
+                              language === 'zh' && category.nameZh ? category.nameZh : 
+                              category.name;
           return (
             <button
               key={category.id}
@@ -29,7 +35,7 @@ export function CategoryList({ activeCategory, setActiveCategory }: CategoryList
                 />
               )}
               <span className="relative z-10 text-lg">{category.icon}</span>
-              <span className="relative z-10">{category.name}</span>
+              <span className="relative z-10">{displayName}</span>
             </button>
           );
         })}
