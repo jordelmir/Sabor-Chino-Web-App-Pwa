@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Edit2, Trash2, Search, Filter } from 'lucide-react';
+import { SpinningLogo } from '../SpinningLogo';
 
 const mockMenu = [
   { id: 1, name: 'Arroz Cantonés Especial', category: 'Arroces', price: 6500, status: 'active' },
@@ -19,9 +20,12 @@ export function AdminMenu() {
       className="max-w-7xl mx-auto px-4 py-8 pb-32"
     >
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h2 className="text-3xl font-display font-bold text-white">Gestión de Menú</h2>
-          <p className="text-sm text-white/50 mt-1">Administra productos, precios y disponibilidad</p>
+        <div className="flex items-center gap-4">
+          <SpinningLogo size="sm" className="drop-shadow-[0_0_15px_rgba(242,183,5,0.3)]" />
+          <div>
+            <h2 className="text-3xl font-display font-bold text-white">Gestión de Menú</h2>
+            <p className="text-sm text-white/50 mt-1">Administra productos, precios y disponibilidad</p>
+          </div>
         </div>
         <button className="bg-imperial-gold text-black px-6 py-3 rounded-xl font-bold hover:bg-imperial-gold/90 transition-all shadow-[0_0_15px_rgba(242,183,5,0.3)] flex items-center justify-center gap-2">
           <Plus className="w-5 h-5" /> Nuevo Producto

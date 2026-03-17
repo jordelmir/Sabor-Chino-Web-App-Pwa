@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CATEGORIES, MENU_DATA, Product } from '../../data/menuData';
-import { Search, Plus, Minus, Trash2, CreditCard, Banknote, Clock, UtensilsCrossed, Send } from 'lucide-react';
+import { Search, Plus, Minus, Trash2, CreditCard, Banknote, Clock, UtensilsCrossed, Send, CheckCircle2 } from 'lucide-react';
 import { SpinningLogo } from '../SpinningLogo';
+import { useOrderStore } from '../../store/useOrderStore';
 
 interface OrderItem {
   id: string;
@@ -13,10 +14,15 @@ interface OrderItem {
 }
 
 export function EmployeePOS() {
+  const { addOrder } = useOrderStore();
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].name);
   const [searchQuery, setSearchQuery] = useState('');
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [orderType, setOrderType] = useState<'Para Llevar' | 'Comer Aquí'>('Para Llevar');
+  const [paymentMethod, setPaymentMethod] = useState<'Efectivo' | 'Tarjeta' | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderNumber, setOrderNumber] = useState(8496);
 
   const filteredProducts = useMemo(() => {
     let filtered = MENU_DATA;
@@ -58,7 +64,44 @@ export function EmployeePOS() {
   const clearOrder = () => {
     if (window.confirm('¿Estás seguro de que deseas limpiar la orden actual?')) {
       setOrderItems([]);
+      setPaymentMethod(null);
     }
+  };
+
+  const handleCheckout = () => {
+    if (orderItems.length === 0 || !paymentMethod) return;
+    
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setOrderSuccess(true);
+      
+      const total = orderItems.reduce((sum, item) => {
+        const price = item.size === 'Medio' && item.product.priceMedio ? item.product.priceMedio : item.product.price;
+        return sum + (price * item.quantity);
+      }, 0);
+
+      addOrder({
+        id: orderNumber.toString(),
+        customerName: 'Cliente POS',
+        items: orderItems,
+        total,
+        status: 'nuevo',
+        paymentMethod,
+        createdAt: Date.now(),
+        type: orderType
+      });
+
+      // Reset after success animation
+      setTimeout(() => {
+        setOrderItems([]);
+        setPaymentMethod(null);
+        setOrderSuccess(false);
+        setOrderNumber(prev => prev + 1);
+      }, 2500);
+    }, 1000);
   };
 
   const total = orderItems.reduce((sum, item) => {
@@ -125,7 +168,7 @@ export function EmployeePOS() {
         </div>
 
         {/* Product Grid */}
-        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar z-10">
+        <div className="flex-1 overflow-y-auto p-6 pb-32 custom-scrollbar z-10">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 content-start">
             <AnimatePresence mode="popLayout">
               {filteredProducts.map(product => (
@@ -191,11 +234,11 @@ export function EmployeePOS() {
         <div className="p-5 border-b border-white/10 bg-black/60 backdrop-blur-xl">
           <div className="flex justify-between items-start mb-2">
             <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
-              Orden <span className="text-imperial-gold">#8496</span>
+              Orden <span className="text-imperial-gold">#{orderNumber}</span>
             </h2>
             <button 
               onClick={clearOrder}
-              disabled={orderItems.length === 0}
+              disabled={orderItems.length === 0 || isSubmitting || orderSuccess}
               className="text-white/30 hover:text-imperial-crimson disabled:opacity-30 transition-colors p-2 rounded-full hover:bg-white/5"
               title="Limpiar Orden"
             >
@@ -211,7 +254,7 @@ export function EmployeePOS() {
         </div>
 
         {/* Ticket Items */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar bg-zinc-950/50">
+        <div className="flex-1 overflow-y-auto p-4 pb-32 space-y-3 custom-scrollbar bg-zinc-950/50">
           <AnimatePresence mode="popLayout">
             {orderItems.length === 0 ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col items-center justify-center text-white/20">
@@ -265,7 +308,21 @@ export function EmployeePOS() {
         </div>
 
         {/* Ticket Footer / Actions */}
-        <div className="p-5 bg-black/80 border-t border-white/10 backdrop-blur-xl">
+        <div className="p-5 bg-black/80 border-t border-white/10 backdrop-blur-xl relative overflow-hidden">
+          <AnimatePresence>
+            {orderSuccess && (
+              <motion.div 
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                className="absolute inset-0 bg-green-500 z-10 flex flex-col items-center justify-center text-black"
+              >
+                <CheckCircle2 className="w-12 h-12 mb-2" />
+                <span className="font-bold text-lg">¡Orden Enviada!</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="flex justify-between items-end mb-5">
             <span className="text-white/50 font-bold uppercase tracking-widest text-xs mb-1">Total a Pagar</span>
             <span className="text-4xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">
@@ -275,24 +332,41 @@ export function EmployeePOS() {
           
           <div className="grid grid-cols-2 gap-3 mb-3">
             <button 
-              disabled={orderItems.length === 0}
-              className="bg-zinc-800 hover:bg-zinc-700 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-white/5"
+              onClick={() => setPaymentMethod('Efectivo')}
+              disabled={orderItems.length === 0 || isSubmitting}
+              className={`py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed border ${
+                paymentMethod === 'Efectivo' 
+                  ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.2)]' 
+                  : 'bg-zinc-800 hover:bg-zinc-700 text-white border-white/5'
+              }`}
             >
-              <Banknote className="w-5 h-5 text-emerald-400" /> Efectivo
+              <Banknote className="w-5 h-5" /> Efectivo
             </button>
             <button 
-              disabled={orderItems.length === 0}
-              className="bg-zinc-800 hover:bg-zinc-700 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-white/5"
+              onClick={() => setPaymentMethod('Tarjeta')}
+              disabled={orderItems.length === 0 || isSubmitting}
+              className={`py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed border ${
+                paymentMethod === 'Tarjeta' 
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.2)]' 
+                  : 'bg-zinc-800 hover:bg-zinc-700 text-white border-white/5'
+              }`}
             >
-              <CreditCard className="w-5 h-5 text-blue-400" /> Tarjeta
+              <CreditCard className="w-5 h-5" /> Tarjeta
             </button>
           </div>
           
           <button 
-            disabled={orderItems.length === 0}
-            className="w-full bg-imperial-crimson hover:bg-imperial-crimson/90 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(178,24,31,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none text-lg"
+            onClick={handleCheckout}
+            disabled={orderItems.length === 0 || !paymentMethod || isSubmitting}
+            className="w-full bg-imperial-crimson hover:bg-imperial-crimson/90 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(178,24,31,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none text-lg relative overflow-hidden"
           >
-            <Send className="w-5 h-5" /> Enviar a Cocina
+            {isSubmitting ? (
+              <SpinningLogo size="sm" className="w-6 h-6" />
+            ) : (
+              <>
+                <Send className="w-5 h-5" /> Enviar a Cocina
+              </>
+            )}
           </button>
         </div>
       </div>

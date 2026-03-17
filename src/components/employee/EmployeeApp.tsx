@@ -9,7 +9,7 @@ export function EmployeeApp() {
   const [activeTab, setActiveTab] = useState<'pos' | 'kds' | 'profile'>('pos');
 
   return (
-    <div className="min-h-screen bg-oled-black text-white font-sans selection:bg-imperial-crimson/30 selection:text-imperial-crimson pb-20 relative">
+    <div className="min-h-screen bg-oled-black text-white font-sans selection:bg-imperial-crimson/30 selection:text-imperial-crimson pb-28 relative">
       <div className="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] pointer-events-none mix-blend-screen"></div>
       <AnimatePresence mode="wait">
         {activeTab === 'pos' && (

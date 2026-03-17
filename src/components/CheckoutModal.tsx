@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '../store/useCartStore';
-import { X, MapPin, CreditCard, Banknote, Smartphone, ScanFace } from 'lucide-react';
+import { useOrderStore } from '../store/useOrderStore';
+import { X, MapPin, CreditCard, Banknote, Smartphone, ScanFace, FileText } from 'lucide-react';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -10,13 +11,20 @@ interface CheckoutModalProps {
 
 export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const { items, getTotal, clearCart } = useCartStore();
+  const { addOrder } = useOrderStore();
   const [address, setAddress] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'SINPE' | 'Tarjeta' | 'Efectivo'>('SINPE');
+  const [receiptNumber, setReceiptNumber] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   const handleConfirm = () => {
     if (!address) {
       alert('Por favor ingresa una dirección de entrega.');
+      return;
+    }
+
+    if (paymentMethod === 'SINPE' && !receiptNumber) {
+      alert('Por favor ingresa el número de comprobante SINPE.');
       return;
     }
 
@@ -27,22 +35,32 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       setIsAuthenticating(false);
       
       const total = getTotal();
-      let message = `*Nuevo Pedido - Sabor Chino*\n\n`;
-      message += `📍 *Dirección:* ${address}\n`;
-      message += `💳 *Pago:* ${paymentMethod}\n\n`;
       
-      items.forEach(item => {
-        const price = item.size === 'Medio' && item.product.priceMedio ? item.product.priceMedio : item.product.price;
-        message += `${item.quantity}x ${item.product.name} (${item.size}) - ¢${(price * item.quantity).toLocaleString('es-CR')}\n`;
-        if (item.notes) message += `   _Nota: ${item.notes}_\n`;
+      // Create new order in the global store
+      addOrder({
+        id: Math.floor(1000 + Math.random() * 9000).toString(),
+        customerName: 'Cliente Web', // In a real app, this would come from user profile
+        items: items.map(item => ({
+          ...item,
+          notes: item.notes || ''
+        })),
+        total,
+        status: paymentMethod === 'SINPE' ? 'validando_pago' : 'nuevo',
+        paymentMethod,
+        receiptNumber: paymentMethod === 'SINPE' ? receiptNumber : undefined,
+        createdAt: Date.now(),
+        type: 'Express',
+        address
       });
-      message += `\n*Total: ¢${total.toLocaleString('es-CR')}*`;
-      
-      const encodedMessage = encodeURIComponent(message);
-      window.open(`https://wa.me/50660394591?text=${encodedMessage}`, '_blank');
       
       clearCart();
       onClose();
+      
+      // Optionally, we could still send a WhatsApp message or just rely on the internal system
+      alert(paymentMethod === 'SINPE' 
+        ? 'Pedido enviado. Estamos validando tu comprobante de pago.' 
+        : 'Pedido enviado a la cocina.');
+        
     }, 1500);
   };
 
@@ -53,7 +71,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-oled-black/90 backdrop-blur-md p-4"
+          className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-oled-black/90 backdrop-blur-md p-4"
           onClick={onClose}
         >
           <motion.div
@@ -142,6 +160,38 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   </div>
                 </div>
 
+                {/* SINPE Receipt Input */}
+                <AnimatePresence>
+                  {paymentMethod === 'SINPE' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="p-4 bg-imperial-gold/10 border border-imperial-gold/20 rounded-2xl space-y-3">
+                        <p className="text-sm text-white/80">
+                          1. Transfiere el total a SINPE Móvil: <span className="font-bold text-imperial-gold text-base tracking-wider">6039-4591</span> (Sabor Chino)
+                        </p>
+                        <div className="space-y-2">
+                          <label className="text-sm text-white/80 flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-imperial-gold" />
+                            2. Ingresa el número de comprobante:
+                          </label>
+                          <input
+                            type="text"
+                            value={receiptNumber}
+                            onChange={(e) => setReceiptNumber(e.target.value)}
+                            placeholder="Ej. 123456789"
+                            className="w-full bg-black/40 border border-imperial-gold/30 rounded-xl p-3 text-white placeholder-white/30 focus:outline-none focus:border-imperial-gold focus:ring-1 focus:ring-imperial-gold shadow-inner transition-all"
+                            disabled={isAuthenticating}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Total & Confirm */}
                 <div className="pt-6 border-t border-white/10">
                   <div className="flex justify-between items-center mb-6">
@@ -168,7 +218,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     ) : (
                       <>
                         <ScanFace className="w-6 h-6" />
-                        Confirmar y Pagar
+                        {paymentMethod === 'SINPE' ? 'Enviar Comprobante y Pagar' : 'Confirmar y Pagar'}
                       </>
                     )}
                   </button>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { UserPlus, Shield, ShieldAlert, MoreVertical, Search } from 'lucide-react';
+import { SpinningLogo } from '../SpinningLogo';
 
 const mockStaff = [
   { id: 1, name: 'Carlos Mendoza', role: 'admin', email: 'carlos@imperial.com', status: 'active', lastActive: 'Hace 5 min' },
@@ -18,9 +19,12 @@ export function AdminStaff() {
       className="max-w-7xl mx-auto px-4 py-8 pb-32"
     >
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h2 className="text-3xl font-display font-bold text-white">Personal y Roles</h2>
-          <p className="text-sm text-white/50 mt-1">Administra accesos y permisos del equipo</p>
+        <div className="flex items-center gap-4">
+          <SpinningLogo size="sm" className="drop-shadow-[0_0_15px_rgba(242,183,5,0.3)]" />
+          <div>
+            <h2 className="text-3xl font-display font-bold text-white">Personal y Roles</h2>
+            <p className="text-sm text-white/50 mt-1">Administra accesos y permisos del equipo</p>
+          </div>
         </div>
         <button className="bg-imperial-gold text-black px-6 py-3 rounded-xl font-bold hover:bg-imperial-gold/90 transition-all shadow-[0_0_15px_rgba(242,183,5,0.3)] flex items-center justify-center gap-2">
           <UserPlus className="w-5 h-5" /> Invitar Miembro

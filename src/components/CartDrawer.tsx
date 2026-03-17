@@ -27,7 +27,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-oled-black/80 backdrop-blur-sm"
+              className="fixed inset-0 z-[60] bg-oled-black/80 backdrop-blur-sm"
               onClick={onClose}
             />
             <motion.div
@@ -35,7 +35,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-zinc-950/95 backdrop-blur-3xl border-l border-white/10 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] flex flex-col"
+              className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-zinc-950/95 backdrop-blur-3xl border-l border-white/10 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] flex flex-col"
             >
               <div className="flex items-center justify-between p-6 border-b border-white/10 bg-black/20">
                 <div className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               </div>
 
               {items.length > 0 && (
-                <div className="p-6 border-t border-white/10 bg-black/40 backdrop-blur-md">
+                <div className="p-6 pb-8 sm:pb-6 border-t border-white/10 bg-black/40 backdrop-blur-md">
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-white/50 uppercase tracking-widest text-xs font-bold">Total a Pagar</span>
                     <span className="text-2xl font-display font-bold text-imperial-gold drop-shadow-[0_0_10px_rgba(242,183,5,0.3)]">

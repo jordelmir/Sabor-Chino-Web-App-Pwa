@@ -1,54 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, CheckCircle2, Flame, AlertCircle, ChefHat, Timer } from 'lucide-react';
-
-interface KDSOrder {
-  id: string;
-  time: string;
-  type: 'Para Llevar' | 'Comer Aquí' | 'Express';
-  status: 'nuevo' | 'preparando' | 'listo';
-  items: { name: string; size: string; qty: number; notes?: string }[];
-  elapsedMinutes: number;
-}
-
-const MOCK_ORDERS: KDSOrder[] = [
-  {
-    id: '8495',
-    time: '19:42',
-    type: 'Para Llevar',
-    status: 'nuevo',
-    elapsedMinutes: 2,
-    items: [
-      { name: 'Combo 1', size: 'Unico', qty: 1 },
-      { name: 'Arroz Cantonés', size: 'Entero', qty: 2, notes: 'Sin cebollín' },
-    ]
-  },
-  {
-    id: '8494',
-    time: '19:35',
-    type: 'Comer Aquí',
-    status: 'preparando',
-    elapsedMinutes: 9,
-    items: [
-      { name: 'Chopsuey Camarones', size: 'Entero', qty: 1 },
-      { name: 'Sopa Wan tan', size: 'Unico', qty: 1 },
-      { name: 'Rollitos Primavera', size: 'Unico', qty: 2 },
-    ]
-  },
-  {
-    id: '8493',
-    time: '19:20',
-    type: 'Express',
-    status: 'preparando',
-    elapsedMinutes: 24,
-    items: [
-      { name: 'Promo Domingo', size: 'Unico', qty: 1 },
-    ]
-  },
-];
+import { Clock, CheckCircle2, Flame, AlertCircle, Timer, Banknote } from 'lucide-react';
+import { useOrderStore, OrderStatus } from '../../store/useOrderStore';
+import { SpinningLogo } from '../SpinningLogo';
 
 export function EmployeeKDS() {
-  const [orders, setOrders] = useState<KDSOrder[]>(MOCK_ORDERS);
+  const { orders, updateOrderStatus } = useOrderStore();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -56,12 +13,26 @@ export function EmployeeKDS() {
     return () => clearInterval(timer);
   }, []);
 
-  const moveOrder = (id: string, newStatus: KDSOrder['status']) => {
-    setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
+  const moveOrder = (id: string, newStatus: OrderStatus) => {
+    const order = orders.find(o => o.id === id);
+    if (newStatus === 'listo' && order && order.status !== 'listo') {
+      const name = order.customerName || `Número ${order.id}`;
+      const utterance = new SpeechSynthesisUtterance(`Orden para ${name} está lista.`);
+      utterance.lang = 'es-ES';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+    updateOrderStatus(id, newStatus);
   };
 
-  const renderColumn = (status: KDSOrder['status'], title: string, icon: React.ReactNode, colorClass: string, bgClass: string) => {
-    const columnOrders = orders.filter(o => o.status === status).sort((a, b) => b.elapsedMinutes - a.elapsedMinutes);
+  const renderColumn = (status: OrderStatus, title: string, icon: React.ReactNode, colorClass: string, bgClass: string) => {
+    const columnOrders = orders
+      .filter(o => o.status === status)
+      .map(o => ({
+        ...o,
+        elapsedMinutes: Math.floor((Date.now() - o.createdAt) / 60000)
+      }))
+      .sort((a, b) => b.elapsedMinutes - a.elapsedMinutes);
 
     return (
       <div className={`flex-1 flex flex-col rounded-3xl overflow-hidden border border-white/5 shadow-2xl ${bgClass}`}>
@@ -74,7 +45,7 @@ export function EmployeeKDS() {
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-5 space-y-5 custom-scrollbar bg-black/20">
+        <div className="flex-1 overflow-y-auto p-5 pb-32 space-y-5 custom-scrollbar bg-black/20">
           <AnimatePresence mode="popLayout">
             {columnOrders.map(order => {
               const isDelayed = order.elapsedMinutes > 20;
@@ -109,14 +80,22 @@ export function EmployeeKDS() {
                     </div>
                   </div>
 
+                  {status === 'validando_pago' && order.paymentMethod === 'SINPE' && (
+                    <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                      <p className="text-xs text-blue-400 font-bold uppercase tracking-widest mb-1">Comprobante SINPE</p>
+                      <p className="text-lg font-mono text-white tracking-wider">{order.receiptNumber}</p>
+                      <p className="text-sm text-white/60 mt-1">Total: ¢{order.total.toLocaleString('es-CR')}</p>
+                    </div>
+                  )}
+
                   <div className="flex-1 space-y-3 mb-5">
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-start gap-3 bg-black/30 p-3 rounded-xl border border-white/5">
                         <span className="font-bold text-imperial-gold text-lg min-w-[1.5rem] bg-imperial-gold/10 w-8 h-8 flex items-center justify-center rounded-lg border border-imperial-gold/20">
-                          {item.qty}
+                          {item.quantity}
                         </span>
                         <div className="flex-1 pt-1">
-                          <p className="font-bold text-white text-base leading-tight">{item.name}</p>
+                          <p className="font-bold text-white text-base leading-tight">{item.product.name}</p>
                           {item.size !== 'Unico' && (
                             <span className="text-[10px] text-white/50 uppercase tracking-widest block mt-1 font-medium">{item.size}</span>
                           )}
@@ -132,6 +111,14 @@ export function EmployeeKDS() {
                   </div>
 
                   <div className="mt-auto grid grid-cols-2 gap-3">
+                    {status === 'validando_pago' && (
+                      <button 
+                        onClick={() => moveOrder(order.id, 'nuevo')}
+                        className="col-span-2 bg-blue-500 hover:bg-blue-400 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] text-lg"
+                      >
+                        <CheckCircle2 className="w-5 h-5" /> Aprobar Pago
+                      </button>
+                    )}
                     {status === 'nuevo' && (
                       <button 
                         onClick={() => moveOrder(order.id, 'preparando')}
@@ -158,10 +145,10 @@ export function EmployeeKDS() {
                     )}
                     {status === 'listo' && (
                       <button 
-                        onClick={() => setOrders(prev => prev.filter(o => o.id !== order.id))}
+                        onClick={() => moveOrder(order.id, order.type === 'Express' ? 'en_camino' : 'entregado')}
                         className="col-span-2 bg-emerald-500 hover:bg-emerald-400 text-black py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] text-lg"
                       >
-                        <CheckCircle2 className="w-5 h-5" /> Entregar Pedido
+                        <CheckCircle2 className="w-5 h-5" /> {order.type === 'Express' ? 'Enviar Pedido' : 'Entregar Pedido'}
                       </button>
                     )}
                   </div>
@@ -179,11 +166,9 @@ export function EmployeeKDS() {
       {/* KDS Header */}
       <div className="px-6 py-4 bg-zinc-950/90 backdrop-blur-2xl border-b border-white/5 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-imperial-crimson/20 rounded-xl flex items-center justify-center border border-imperial-crimson/30 shadow-[0_0_15px_rgba(178,24,31,0.2)]">
-            <ChefHat className="w-6 h-6 text-imperial-crimson drop-shadow-[0_0_8px_rgba(178,24,31,0.5)]" />
-          </div>
+          <SpinningLogo size="sm" className="drop-shadow-[0_0_15px_rgba(242,183,5,0.3)]" />
           <div>
-            <h1 className="text-xl font-display font-bold text-white tracking-wide">Kitchen Display System</h1>
+            <h1 className="text-xl font-display font-bold text-white tracking-wide">Pedidos y Cocina</h1>
             <p className="text-xs text-white/50 uppercase tracking-widest font-medium">Sabor Chino - Hermanos Balmaceda</p>
           </div>
         </div>
@@ -198,6 +183,7 @@ export function EmployeeKDS() {
       {/* KDS Columns */}
       <div className="flex-1 p-6 flex gap-6 overflow-hidden relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] mix-blend-overlay pointer-events-none"></div>
+        {renderColumn('validando_pago', 'Validar Pagos', <Banknote className="w-6 h-6 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />, 'text-blue-400', 'bg-zinc-950/90 backdrop-blur-md')}
         {renderColumn('nuevo', 'Nuevos', <AlertCircle className="w-6 h-6 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />, 'text-white', 'bg-zinc-950/90 backdrop-blur-md')}
         {renderColumn('preparando', 'En Fuego', <Flame className="w-6 h-6 drop-shadow-[0_0_8px_rgba(178,24,31,0.5)]" />, 'text-imperial-crimson', 'bg-zinc-950/90 backdrop-blur-md')}
         {renderColumn('listo', 'Listos', <CheckCircle2 className="w-6 h-6 drop-shadow-[0_0_8px_rgba(242,183,5,0.5)]" />, 'text-imperial-gold', 'bg-zinc-950/90 backdrop-blur-md')}
